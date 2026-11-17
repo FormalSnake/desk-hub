@@ -43,17 +43,58 @@ Vertical stand: 2 `cradle`, 1 `spine` and 2 `key_floor`. It holds the laptop on 
 ![Parts](renders/exploded.png)
 ![Vertical stand](renders/vertical.png)
 
-## Before printing everything
+## Printing in Bambu Studio
 
-1. Measure your laptop's underside, front to back and side to side, and set `laptop_d` and `laptop_w`.
-2. Print `fit_coupon`, one of each key and `test_tail` in PLA. Each key should slide into its socket by hand without wobble. If they're tight or loose, change `fit` (default 0.2 mm per side).
-3. Print one `end_cap` and one `rail_cap_lip` in PETG. Hold each against the laptop: the stop and the lip should touch the chassis below the ports and vents.
+Every STL is exported in its print orientation and needs no supports. These steps are for a Bambu Lab P1S with a 0.4 mm nozzle. Each material gets its own project, so you only swap the spool once.
+
+### Settings for every plate
+
+1. Printer: **Bambu Lab P1S 0.4 nozzle**.
+2. Process: **0.20mm Standard @BBL X1C** (the P1S uses the X1C process presets).
+3. In the process **Strength** tab, set **Wall loops** to 3, **Sparse infill density** to 15% and **Sparse infill pattern** to Gyroid.
+4. Support: leave **Enable support** off.
+5. Filament: **Bambu PLA Basic** or **Generic PLA** for PLA projects, **Generic PETG** for PETG projects.
+
+To make copies of a part, right-click it and choose **Clone** (Ctrl+M), then enter the count. Use **Add Plate** in the toolbar for more plates, drag parts onto them, and press **Arrange** on each plate. To slice, pick **Slice all** from the **Slice plate** menu, then **Print plate**.
+
+### Before you start
+
+Measure the laptop's underside front to back and side to side. Set `laptop_d` and `laptop_w` at the top of `desk-hub.scad`, then re-export the STLs (see Building). The defaults are the Strix G18's 299 x 399 mm.
+
+### Step 1: test print
+
+Print this before anything else. It's about 50 g and checks the joint fit and the laptop fit.
+
+1. New PLA project. Import (Ctrl+I) `stl/fit_coupon.stl`, `stl/key_wall.stl`, `stl/key_tray.stl`, `stl/key_floor.stl`, `stl/key_bar.stl` and `stl/test_tail.stl`, one of each, on one plate. Slice and print.
+2. New PETG project. Import `stl/end_cap.stl` and `stl/rail_cap_lip.stl`, one of each, on one plate. Slice and print. These are real parts, so keep them.
+3. Push each key and the tail into its socket on the coupon. They should slide in by hand and not wobble. Too tight: raise `fit` in `desk-hub.scad` by 0.05. Loose: lower it by 0.05. Then re-export the STLs.
+4. Hold the end cap against one end of the laptop with both on the desk. The orange stop should touch the chassis below the vents. Hold the rail cap's lip against the port side the same way; it should sit below the ports.
+
+### Step 2: the riser
+
+PLA project, three plates:
+
+| Plate | Parts |
+| --- | --- |
+| 1 | `segment` x6 |
+| 2 | `spine` x2, `bar` x4 |
+| 3 | `key_wall` x8, `key_tray` x8, `key_floor` x3, `key_bar` x6 |
+
+PETG project, one plate:
+
+| Plate | Parts |
+| --- | --- |
+| 1 | `end_cap` x3, `rail_cap_lip` x3, `rail_cap` x2 (plus the end cap and lip cap from the test print) |
+
+### Step 3: organizers and vertical stand (optional, PLA)
+
+| Plate | Parts |
+| --- | --- |
+| 1 | `pen_cup`, `phone_stand`, `catch_tray`, `cable_dock` |
+| 2 | `headphone_hook` |
+| 3 | `cradle` x2, `spine` x1, `key_floor` x2 (vertical stand only) |
 
 ![Test prints](renders/tests.png)
-
-## Printing
-
-Print every part in the orientation it's exported in, with no supports. The rail caps print flange side down.
 
 ## Assembly
 

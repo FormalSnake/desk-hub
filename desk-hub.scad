@@ -259,6 +259,8 @@ module headphone_hook() {
     translate([20, -26, 0]) cube([20, 20, 170]);
     translate([20, -86, 160]) cube([20, 80, 10]);
     translate([20, -86, 160]) cube([20, 8, 24]);
+    // 45 degree brace so the arm prints without supports.
+    hull() { translate([20, -26, 100]) cube([20, 6, 6]); translate([20, -86, 160]) cube([20, 6, 6]); }
 }
 
 // ---------------------------------------------------------------- tests
