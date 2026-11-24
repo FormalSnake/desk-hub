@@ -13,7 +13,7 @@ part = "assembly";
 // gauge_corner | gauge_corner_mirror | gauge_strap_x | gauge_strap_y | gauge_key
 
 $fn = 40;
-fit = 0.2;            // clearance per side on every joint
+fit = 0.15;           // clearance per side on every joint
 
 laptop_d = 299;       // front to back, runs along the cheeks
 laptop_w = 399;       // left to right, spans between the cheeks
