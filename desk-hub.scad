@@ -114,7 +114,7 @@ module rail_cap(lip = false) {
     c = seg_len / 2;
     l = seg_len - 0.4;
     translate([0.2, 0, 0]) {
-        translate([0, cap_y0, wall_top]) cube([l, cheek_w - cap_y0, cap_t]);
+        translate([0, cap_y0, wall_top]) cube([l, cheek_w + fit + 3 - cap_y0, cap_t]);
         translate([0, wall_y0 - fit - 3, wall_top - 4]) cube([l, 3, 4.01]);
         difference() {
             translate([0, cheek_w + fit, wall_top - 4]) cube([l, 3, 4.01]);
