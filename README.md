@@ -70,6 +70,8 @@ Print this before anything else. It's about 50 g and checks the joint fit and th
 3. Push each key and the tail into its socket on the coupon. They should slide in by hand and not wobble. Too tight: raise `fit` in `desk-hub.scad` by 0.05. Loose: lower it by 0.05. Then re-export the STLs.
 4. Hold the end cap against one end of the laptop with both on the desk. The orange stop should touch the chassis below the vents. Hold the rail cap's lip against the port side the same way; it should sit below the ports.
 
+To check `laptop_d` and `laptop_w` before printing the riser, print the footprint gauge (PLA, about 95 g): `gauge_corner` x2, `gauge_corner_mirror` x2, `gauge_strap_y` x4, `gauge_strap_x` x2 and `gauge_key` x10. Lay it out like `part="gauge"` in OpenSCAD and join it with the keys. The stops and lips sit where the riser's do, so the laptop should drop in with 1 mm to spare at each. Tight: raise the dimension by the shortfall. Rattles: lower it.
+
 ### Step 2: the riser
 
 PLA project, three plates:

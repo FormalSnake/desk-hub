@@ -6,10 +6,11 @@
 // PETG only where the laptop touches (rail caps, end caps). Everything else is PLA.
 
 part = "assembly";
-// assembly | vertical | parts | tests
+// assembly | vertical | parts | tests | gauge
 // segment | rail_cap | rail_cap_lip | end_cap | spine | bar | cradle
 // key_wall | key_tray | key_floor | key_bar
 // pen_cup | phone_stand | catch_tray | cable_dock | headphone_hook | fit_coupon
+// gauge_corner | gauge_corner_mirror | gauge_strap_x | gauge_strap_y | gauge_key
 
 $fn = 40;
 fit = 0.2;            // clearance per side on every joint
@@ -280,6 +281,54 @@ module fit_coupon() {
 }
 module test_tail() { translate([0, 0, 0]) linear_extrude(16) tail2d(acc_tail); translate([-10, -8, 0]) cube([20, 8, 16]); }
 
+// Footprint gauge: the riser's laptop pocket at desk height, with the stops and lips where
+// the real ones sit. Four corners tied by straps and bar keys; the laptop should drop in
+// with `gap` to spare at every stop and lip. Laptop frame, rear port-side corner at origin.
+gauge_t = 4;
+gauge_x0 = -gap - ec_plate;       // back of the stop
+gauge_y0 = -gap - lip_t;          // back of the lip
+gauge_arm = 20;
+
+module gauge_corner() {
+    x1 = end_seg_mid[0] + lip_len / 2 + 10;
+    y1 = stop_reach + 10;
+    difference() {
+        union() {
+            translate([gauge_x0, gauge_y0, 0]) cube([x1 - gauge_x0, rail_w - gauge_y0, gauge_t]);
+            translate([gauge_x0, gauge_y0, 0]) cube([gauge_arm, y1 - gauge_y0, gauge_t]);
+            translate([gauge_x0, gauge_y0, 0]) cube([ec_plate, stop_reach - gauge_y0, gauge_t + stop_h]);
+            translate([end_seg_mid[0] - lip_len / 2, gauge_y0, 0]) cube([lip_len, lip_t, gauge_t + lip_h]);
+        }
+        translate([x1, (gauge_y0 + rail_w) / 2, 0]) rotate(90) socket(k_bar, -1, gauge_t + 1);
+        translate([gauge_x0 + gauge_arm / 2, y1, 0]) rotate(180) socket(k_bar, -1, gauge_t + 1);
+    }
+}
+module gauge_strap(l, w) difference() {
+    cube([w, l, gauge_t]);
+    for (e = [[0, 0], [l, 180]]) translate([w / 2, e[0], 0]) rotate(e[1]) socket(k_bar, -1, gauge_t + 1);
+}
+module gauge_strap_x() gauge_strap(laptop_d - 2 * (end_seg_mid[0] + lip_len / 2 + 10), rail_w - gauge_y0);
+module gauge_strap_y() gauge_strap((laptop_w - 2 * (stop_reach + 10)) / 2, gauge_arm);
+module gauge_key() key(k_bar, gauge_t - 0.4);
+
+module gauge_side() {
+    x1 = end_seg_mid[0] + lip_len / 2 + 10;
+    y1 = stop_reach + 10;
+    translate([x1, rail_w, 0]) rotate(-90) gauge_strap_x();
+    color("#7c8794") for (x = [x1, laptop_d - x1]) translate([x, (gauge_y0 + rail_w) / 2, 0]) rotate(90) gauge_key();
+    for (m = [0, 1]) translate([m * laptop_d, 0, 0]) mirror([m, 0, 0]) {
+        gauge_corner();
+        translate([gauge_x0, y1, 0]) gauge_strap_y();
+        color("#7c8794") translate([gauge_x0 + gauge_arm / 2, y1, 0]) gauge_key();
+    }
+}
+module gauge() {
+    gauge_side();
+    translate([laptop_d, laptop_w, 0]) rotate(180) gauge_side();
+    color("#7c8794") for (x = [gauge_x0 + gauge_arm / 2, laptop_d - gauge_x0 - gauge_arm / 2])
+        translate([x, laptop_w / 2, 0]) gauge_key();
+}
+
 // ---------------------------------------------------------------- placement
 
 // Laptop frame: X 0 at the laptop's rear (exhaust) edge, Y 0 at its port edge, Z up.
@@ -347,3 +396,9 @@ if (part == "cable_dock") cable_dock();
 if (part == "headphone_hook") headphone_hook();
 if (part == "fit_coupon") fit_coupon();
 if (part == "test_tail") test_tail();
+if (part == "gauge") gauge();
+if (part == "gauge_corner") gauge_corner();
+if (part == "gauge_corner_mirror") mirror([1, 0, 0]) gauge_corner();
+if (part == "gauge_strap_x") gauge_strap_x();
+if (part == "gauge_strap_y") gauge_strap_y();
+if (part == "gauge_key") gauge_key();
