@@ -27,6 +27,7 @@ PETG goes only where the laptop touches (rail caps and end caps, about 180 g). E
 | `end_cap` | 4 | PETG | 26 g |
 | `rail_cap_lip` | 4 | PETG | 13 g |
 | `rail_cap` | 2 | PETG | 13 g |
+| `lip_clip` | 4 | PETG | 2 g |
 | `spine` | 2 | PLA | 51 g |
 | `bar` | 4 | PLA | 22 g |
 | `key_wall` | 8 | PLA | 6 g |
@@ -66,9 +67,9 @@ Measure the laptop's underside front to back and side to side. Set `laptop_d` an
 Print this before anything else. It's about 50 g and checks the joint fit and the laptop fit.
 
 1. New PLA project. Import (Ctrl+I) `stl/fit_coupon.stl`, `stl/key_wall.stl`, `stl/key_tray.stl`, `stl/key_floor.stl`, `stl/key_bar.stl` and `stl/test_tail.stl`, one of each, on one plate. Slice and print.
-2. New PETG project. Import `stl/end_cap.stl` and `stl/rail_cap_lip.stl`, one of each, on one plate. Slice and print. These are real parts, so keep them.
+2. New PETG project. Import `stl/end_cap.stl`, `stl/rail_cap_lip.stl` and `stl/lip_clip.stl`, one of each, on one plate. Slice and print. These are real parts, so keep them.
 3. Push each key and the tail into its socket on the coupon. They should slide in by hand and not wobble. Too tight: raise `fit` in `desk-hub.scad` by 0.05. Loose: lower it by 0.05. Then re-export the STLs.
-4. Hold the end cap against one end of the laptop with both on the desk. The orange stop should touch the chassis below the vents. Hold the rail cap's lip against the port side the same way; it should sit below the ports.
+4. Hold the end cap against one end of the laptop with both on the desk. The orange stop should touch the chassis below the vents. Snap the lip clip onto the rail cap's notched edge and hold it against the port side the same way; it should sit below the ports.
 
 To check `laptop_d` and `laptop_w` before printing the riser, print the footprint gauge (PLA, about 95 g): `gauge_corner` x2, `gauge_corner_mirror` x2, `gauge_strap_y` x4, `gauge_strap_x` x2 and `gauge_key` x10. Lay it out like `part="gauge"` in OpenSCAD and join it with the keys. The stops and lips sit where the riser's do, so the laptop should drop in with 1 mm to spare at each. Tight: raise the dimension by the shortfall. Rattles: lower it.
 
@@ -86,7 +87,9 @@ PETG project, one plate:
 
 | Plate | Parts |
 | --- | --- |
-| 1 | `end_cap` x3, `rail_cap_lip` x3, `rail_cap` x2 (plus the end cap and lip cap from the test print) |
+| 1 | `end_cap` x3, `rail_cap_lip` x3, `rail_cap` x2, `lip_clip` x3 (plus the test print's PETG parts) |
+
+The rail caps print top face down. Stood on their flanges, the top plate warps them off the bed.
 
 ### Step 3: organizers and vertical stand (optional, PLA)
 
@@ -104,7 +107,8 @@ PETG project, one plate:
 2. Lower the spine halves and the two end segments onto them.
 3. Join the segments and end caps of each cheek with the wall and tray keys. Wall keys go into the end caps from below.
 4. Drop the bar halves and bar keys into the top sockets.
-5. Press the rail caps onto the wall tops. They lock the bar keys and wall keys in place.
+5. Press the rail caps onto the wall tops, notched caps on the end segments with the notch over the tray. They lock the bar keys and wall keys in place.
+6. Snap a lip clip into each notch, hook first under the flange.
 
 ## Building
 

@@ -7,7 +7,7 @@
 
 part = "assembly";
 // assembly | vertical | parts | tests | gauge
-// segment | rail_cap | rail_cap_lip | end_cap | spine | bar | cradle
+// segment | rail_cap | rail_cap_lip | lip_clip | end_cap | spine | bar | cradle
 // key_wall | key_tray | key_floor | key_bar
 // pen_cup | phone_stand | catch_tray | cable_dock | headphone_hook | fit_coupon
 // gauge_corner | gauge_corner_mirror | gauge_strap_x | gauge_strap_y | gauge_key
@@ -109,20 +109,35 @@ module segment() {
     }
 }
 
-// PETG cap the laptop sits on. Flanges hug the wall; the lip variant goes on the end segments.
+// PETG cap the laptop sits on. Flanges hug the wall. Prints top face down: stood on its
+// flanges, the top plate warps them off the bed. The lip variant has a pocket for the lip clip.
+clip_t = 2;           // lip clip back wall, half of it sunk into the cap's pocket
+hook_z = wall_top - 4 - fit;
 module rail_cap(lip = false) {
     c = seg_len / 2;
     l = seg_len - 0.4;
-    translate([0.2, 0, 0]) {
-        translate([0, cap_y0, wall_top]) cube([l, cheek_w + fit + 3 - cap_y0, cap_t]);
-        translate([0, wall_y0 - fit - 3, wall_top - 4]) cube([l, 3, 4.01]);
-        difference() {
-            translate([0, cheek_w + fit, wall_top - 4]) cube([l, 3, 4.01]);
-            translate([c - 0.2 - 11, cheek_w - 1, wall_top - 5]) cube([22, 6, 6]);
+    difference() {
+        translate([0.2, 0, 0]) {
+            translate([0, cap_y0, wall_top]) cube([l, cheek_w + fit + 3 - cap_y0, cap_t]);
+            translate([0, cap_y0, wall_top - 4]) cube([l, wall_y0 - fit - cap_y0, 4.01]);
+            difference() {
+                translate([0, cheek_w + fit, wall_top - 4]) cube([l, 3, 4.01]);
+                translate([c - 0.2 - 11, cheek_w - 1, wall_top - 5]) cube([22, 6, 6]);
+            }
         }
-        if (lip) translate([c - 0.2 - lip_len / 2, cap_y0, deck - 0.01]) cube([lip_len, lip_t, lip_h]);
+        if (lip) translate([c - lip_len / 2 - fit, cap_y0 - 1, wall_top - 5]) cube([lip_len + 2 * fit, clip_t / 2 + 1 + fit, cap_t + 6]);
     }
 }
+
+// PETG lip: stops the laptop sliding sideways. Snaps over the lip cap's outer edge, the hook
+// catching under the outer flange.
+module lip_clip_2d() {   // Y-Z profile in cheek coordinates
+    b = cap_y0 + clip_t / 2;
+    translate([cap_y0 - clip_t / 2, deck]) square([lip_t + clip_t / 2, lip_h]);
+    translate([cap_y0 - clip_t / 2, hook_z - 1.6]) square([clip_t, deck + lip_h - hook_z + 1.6]);
+    polygon([[b - 0.01, hook_z], [b + fit + 1.2, hook_z], [b + fit + 1.2, hook_z - 0.4], [b - 0.01, hook_z - 1.6]]);
+}
+module lip_clip() translate([seg_len / 2 - lip_len / 2, 0, 0]) rotate([90, 0, 90]) linear_extrude(lip_len) lip_clip_2d();
 
 // PETG end cap: closes the tray and stops the laptop sliding off the end. Symmetric in its
 // thickness, so it fits either end of either cheek.
@@ -340,7 +355,10 @@ module cheek(lips = true) {
         color("#d8d4cc") for (i = [0 : 2]) translate([ec_t + i * seg_len, 0, 0]) segment();
         color("#f08a3c") {
             for (x = [0, ec_t + 3 * seg_len]) translate([x, 0, 0]) end_cap();
-            for (i = [0 : 2]) translate([ec_t + i * seg_len, 0, 0]) rail_cap(lips && i != 1);
+            for (i = [0 : 2]) translate([ec_t + i * seg_len, 0, 0]) {
+                rail_cap(lips && i != 1);
+                if (lips && i != 1) lip_clip();
+            }
         }
     }
 }
@@ -379,8 +397,9 @@ module layout(parts) for (i = [0 : len(parts) - 1]) translate([(i % 4) * 230, -f
 if (part == "assembly") { riser(); color("#5b9bd5") organizers(); }
 if (part == "vertical") vertical();
 if (part == "segment") segment();
-if (part == "rail_cap") translate([0, -cap_y0, -wall_top + 4]) rail_cap(false);
-if (part == "rail_cap_lip") translate([0, -cap_y0, -wall_top + 4]) rail_cap(true);
+if (part == "rail_cap") translate([0, -cap_y0, deck]) mirror([0, 0, 1]) rail_cap(false);
+if (part == "rail_cap_lip") translate([0, -cap_y0, deck]) mirror([0, 0, 1]) rail_cap(true);
+if (part == "lip_clip") translate([-seg_len / 2 + lip_len / 2, deck + lip_h, clip_t / 2 - cap_y0]) rotate([90, 0, 0]) lip_clip();
 if (part == "end_cap") end_cap();
 if (part == "spine") spine();
 if (part == "bar") bar();

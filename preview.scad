@@ -49,6 +49,7 @@ if (view == "exploded") {
     translate([0, 0, 0]) {
         for (i = [0 : 2]) translate([i * 110, 0, 0]) color("#d8d4cc") segment();
         for (i = [0 : 2]) translate([i * 110, 0, 25]) color("#f08a3c") rail_cap(i != 1);
+        for (i = [0, 2]) translate([i * 110, -12, 45]) color("#f08a3c") lip_clip();
         translate([340, 0, 0]) color("#f08a3c") end_cap();
         translate([-50, 0, 0]) color("#f08a3c") end_cap();
         translate([0, 120, 0]) color("#7c8794") rotate(-90) spine();
@@ -66,5 +67,6 @@ if (view == "tests") {
     color("#7c8794") translate([0, 50, 0]) { key(k_wall, 16); translate([24, 0, 0]) key(k_tray, 16); translate([44, 0, 0]) key(k_floor, 16);
         translate([72, 0, 0]) key(k_bar, 16); translate([100, 0, 0]) test_tail(); }
     color("#f08a3c") translate([140, 0, 0]) end_cap();
-    color("#f08a3c") translate([0, 90, -wall_top + 4]) translate([0, -cap_y0, 0]) rail_cap(true);
+    color("#f08a3c") translate([0, 90 - cap_y0, deck]) mirror([0, 0, 1]) rail_cap(true);
+    color("#f08a3c") translate([0, 130, clip_t / 2 - cap_y0]) rotate([90, 0, 0]) translate([lip_len / 2 - seg_len / 2, -deck - lip_h, 0]) lip_clip();
 }
